@@ -97,54 +97,30 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  // ==============================================================
-	        // PHA 1 (3 giây): Trục 1 XANH --- Trục 2 ĐỎ
-	        // ==============================================================
-	        // Trục 1 (Bắc - Nam): Bật Xanh, tắt Đỏ, Vàng
+	  //GREEN-RED (3s)
 	        HAL_GPIO_WritePin(GPIOA, LED_RED_1_Pin | LED_YELLOW_1_Pin, GPIO_PIN_SET);
 	        HAL_GPIO_WritePin(GPIOA, LED_GREEN_1_Pin, GPIO_PIN_RESET);
-
-	        // Trục 2 (Đông - Tây): Bật Đỏ, tắt Xanh, Vàng
 	        HAL_GPIO_WritePin(GPIOB, LED_YELLOW_2_Pin | LED_GREEN_2_Pin, GPIO_PIN_SET);
 	        HAL_GPIO_WritePin(GPIOB, LED_RED_2_Pin, GPIO_PIN_RESET);
+	        HAL_Delay(3000);
 
-	        HAL_Delay(3000); // Giữ trạng thái 3 giây
-
-	        // ==============================================================
-	        // PHA 2 (2 giây): Trục 1 VÀNG --- Trục 2 ĐỎ
-	        // ==============================================================
-	        // Trục 1 (Bắc - Nam): Tắt Xanh, chuyển sang bật Vàng
+	        // YELLOW - RED (2s)
 	        HAL_GPIO_WritePin(GPIOA, LED_GREEN_1_Pin, GPIO_PIN_SET);
 	        HAL_GPIO_WritePin(GPIOA, LED_YELLOW_1_Pin, GPIO_PIN_RESET);
+	        HAL_Delay(2000);
 
-	        // Trục 2 (Đông - Tây): Vẫn giữ trạng thái Đỏ (Không cần đổi lệnh)
-
-	        HAL_Delay(2000); // Giữ trạng thái 2 giây
-
-	        // ==============================================================
-	        // PHA 3 (3 giây): Trục 1 ĐỎ --- Trục 2 XANH
-	        // ==============================================================
-	        // Trục 1 (Bắc - Nam): Tắt Vàng, chuyển sang bật Đỏ
+	        // RED - GREEN (3s)
 	        HAL_GPIO_WritePin(GPIOA, LED_YELLOW_1_Pin, GPIO_PIN_SET);
 	        HAL_GPIO_WritePin(GPIOA, LED_RED_1_Pin, GPIO_PIN_RESET);
-
-	        // Trục 2 (Đông - Tây): Tắt Đỏ, chuyển sang bật Xanh
 	        HAL_GPIO_WritePin(GPIOB, LED_RED_2_Pin, GPIO_PIN_SET);
 	        HAL_GPIO_WritePin(GPIOB, LED_GREEN_2_Pin, GPIO_PIN_RESET);
+	        HAL_Delay(3000);
 
-	        HAL_Delay(3000); // Giữ trạng thái 3 giây
-
-	        // ==============================================================
-	        // PHA 4 (2 giây): Trục 1 ĐỎ --- Trục 2 VÀNG
-	        // ==============================================================
-	        // Trục 1 (Bắc - Nam): Vẫn giữ trạng thái Đỏ
-
-	        // Trục 2 (Đông - Tây): Tắt Xanh, chuyển sang bật Vàng
+	        // RED - YELLOW (2s)
 	        HAL_GPIO_WritePin(GPIOB, LED_GREEN_2_Pin, GPIO_PIN_SET);
 	        HAL_GPIO_WritePin(GPIOB, LED_YELLOW_2_Pin, GPIO_PIN_RESET);
 
-	        HAL_Delay(2000); // Giữ trạng thái 2 giây
-
+	        HAL_Delay(2000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

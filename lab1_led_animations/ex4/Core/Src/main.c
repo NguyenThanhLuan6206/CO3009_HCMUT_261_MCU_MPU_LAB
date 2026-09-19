@@ -167,12 +167,9 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-/* USER CODE BEGIN 4 */
 void display7SEG(int num) {
-    // Mã Hex cho LED 7 đoạn Anode chung (mức 0 là sáng, 1 là tắt)
     uint8_t seg_data[10] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90};
 
-    // Bảo vệ logic: Nếu giá trị truyền vào ngoài vùng 0-9 thì thoát hàm
     if (num < 0 || num > 9) return;
 
     uint8_t data = seg_data[num];
@@ -186,8 +183,6 @@ void display7SEG(int num) {
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6,  (data >> 5) & 1); // f
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5,  (data >> 6) & 1); // g
 }
-/* USER CODE END 4 */
-
 /* USER CODE END 4 */
 
 /**
