@@ -1,20 +1,20 @@
-23:39:34 **** Incremental Build of configuration Debug for project LedMatrix_Display ****
+00:37:37 **** Build of configuration Debug for project DigitalClock ****
 make -j24 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103x6 -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "LedMatrix_Display.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\261\Microprocessors_Microcontrollers\lab\lab2_timer_interrupt_and_led_scanning\LedMatrix_Display\STM32F103C6UX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LedMatrix_Display.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: LedMatrix_Display.elf
+arm-none-eabi-gcc -o "DigitalClock.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\261\Microprocessors_Microcontrollers\lab\lab2_timer_interrupt_and_led_scanning\DigitalClock\STM32F103C6UX_FLASH.ld" --specs=nosys.specs -Wl,-Map="DigitalClock.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: DigitalClock.elf
  
-arm-none-eabi-size   LedMatrix_Display.elf 
-arm-none-eabi-objdump -h -S  LedMatrix_Display.elf  > "LedMatrix_Display.list"
+arm-none-eabi-size   DigitalClock.elf 
+arm-none-eabi-objdump -h -S  DigitalClock.elf  > "DigitalClock.list"
+arm-none-eabi-objcopy  -O ihex  DigitalClock.elf  "DigitalClock.hex"
    text	   data	    bss	    dec	    hex	filename
-   8300	     40	   1696	  10036	   2734	LedMatrix_Display.elf
-arm-none-eabi-objcopy  -O ihex  LedMatrix_Display.elf  "LedMatrix_Display.hex"
-arm-none-eabi-objcopy  -O binary  LedMatrix_Display.elf  "LedMatrix_Display.bin"
+   7772	     32	   1680	   9484	   250c	DigitalClock.elf
+arm-none-eabi-objcopy  -O binary  DigitalClock.elf  "DigitalClock.bin"
 Finished building: default.size.stdout
  
-Finished building: LedMatrix_Display.hex
-Finished building: LedMatrix_Display.bin
-Finished building: LedMatrix_Display.list
+Finished building: DigitalClock.hex
+Finished building: DigitalClock.bin
  
  
+Finished building: DigitalClock.list
  

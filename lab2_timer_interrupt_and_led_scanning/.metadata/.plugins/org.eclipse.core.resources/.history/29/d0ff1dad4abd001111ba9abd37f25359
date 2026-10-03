@@ -114,6 +114,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
   updateClockBuffer();
+
   while (1)
   {
 	  //this code for exercise 1
