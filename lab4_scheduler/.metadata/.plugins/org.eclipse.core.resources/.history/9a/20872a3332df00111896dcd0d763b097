@@ -1,0 +1,53 @@
+#include "scheduler.h"
+#include <stddef.h>
+
+sTask SCH_tasks_G[SCH_MAX_TASKS];
+uint8_t current_idx_task = 0;
+
+static sTask* head = NULL;
+
+void SCH_Init(void) {
+	current_idx_task = 0;
+}
+
+uint32_t SCH_Add_Task(void (*pFunction)(), uint32_t DELAY, uint32_t PERIOD) {
+	if(current_idx_task < SCH_MAX_TASKS) {
+		SCH_tasks_G[current_idx_task].pTask  = pFunction;
+		SCH_tasks_G[current_idx_task].Delay  = DELAY;
+		SCH_tasks_G[current_idx_task].Period = PERIOD;
+		SCH_tasks_G[current_idx_task].RunMe  = 0;
+		SCH_tasks_G[current_idx_task].TaskID = current_idx_task;
+		current_idx_task++;
+	}
+}
+
+void SCH_Update(void) {
+	for(int i = 0; i < current_idx_task; i++) {
+		if(SCH_tasks_G[i].Delay > 0) {
+			SCH_tasks_G[i].Delay--;
+		} else {
+			SCH_tasks_G[i].Delay = SCH_tasks_G[i].Period;
+			SCH_tasks_G[i].RunMe += 1;
+		}
+	}
+}
+
+void SCH_Dispatch_Tasks(void) {
+    for(int i = 0; i < current_idx_task; i++) {
+    	if(SCH_tasks_G[i].RunMe > 0) {
+    		SCH_tasks_G[i].RunMe--;
+    		(*SCH_tasks_G[i].pTask)();
+    	}
+    }
+}
+
+uint8_t SCH_Delete(uint32_t taskID) {
+
+}
+
+
+// Hàm nội bộ: Chèn task vào danh sách theo nguyên lý độ trễ tương đối (Delta time)
+static void SCH_Insert_Task_To_List(sTask* newNode) {
+
+}
+

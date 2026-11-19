@@ -1,0 +1,73 @@
+#include "scheduler.h"
+#include <stddef.h>
+
+sTask SCH_tasks_G[SCH_MAX_TASKS];
+uint8_t current_idx_task = 0;
+
+void SCH_Init(void) {
+	current_idx_task = 0;
+}
+
+uint32_t SCH_Add_Task(void (*pFunction)(), uint32_t DELAY, uint32_t PERIOD) {
+	if(current_idx_task < SCH_MAX_TASKS) {
+		SCH_tasks_G[current_idx_task].pTask  = pFunction;
+		SCH_tasks_G[current_idx_task].Delay  = DELAY;
+		SCH_tasks_G[current_idx_task].Period = PERIOD;
+		SCH_tasks_G[current_idx_task].RunMe  = 0;
+		SCH_tasks_G[current_idx_task].TaskID = current_idx_task;
+
+		uint32_t added_task_id = current_idx_task;
+		current_idx_task++;
+
+		return added_task_id;
+	}
+	return SCH_MAX_TASKS;
+}
+void SCH_Update(void) {
+	for(int i = 0; i < current_idx_task; i++) {
+		if(SCH_tasks_G[i].Delay > 0) {
+			SCH_tasks_G[i].Delay--;
+		} else {
+			SCH_tasks_G[i].Delay = SCH_tasks_G[i].Period;
+			SCH_tasks_G[i].RunMe += 1;
+		}
+	}
+}
+
+void SCH_Dispatch_Tasks(void) {
+    for(int i = 0; i < current_idx_task; i++) {
+        if(SCH_tasks_G[i].RunMe > 0) {
+            SCH_tasks_G[i].RunMe--;
+            (*SCH_tasks_G[i].pTask)();
+            if (SCH_tasks_G[i].Period == 0) {
+                SCH_Delete_Task(i);
+                i--;
+            }
+        }
+    }
+}
+
+uint8_t SCH_Delete_Task(uint32_t taskID) {
+    uint8_t return_code = 0;
+
+    if (taskID < current_idx_task) {
+        for (int i = taskID; i < current_idx_task - 1; i++) {
+            SCH_tasks_G[i].pTask  = SCH_tasks_G[i+1].pTask;
+            SCH_tasks_G[i].Delay  = SCH_tasks_G[i+1].Delay;
+            SCH_tasks_G[i].Period = SCH_tasks_G[i+1].Period;
+            SCH_tasks_G[i].RunMe  = SCH_tasks_G[i+1].RunMe;
+            SCH_tasks_G[i].TaskID = i; // Cập nhật lại ID cho đúng vị trí mới
+        }
+
+        SCH_tasks_G[current_idx_task - 1].pTask = NULL;
+        SCH_tasks_G[current_idx_task - 1].Delay = 0;
+        SCH_tasks_G[current_idx_task - 1].Period = 0;
+        SCH_tasks_G[current_idx_task - 1].RunMe = 0;
+
+        current_idx_task--;
+        return_code = 1;
+    }
+
+    return return_code;
+}
+

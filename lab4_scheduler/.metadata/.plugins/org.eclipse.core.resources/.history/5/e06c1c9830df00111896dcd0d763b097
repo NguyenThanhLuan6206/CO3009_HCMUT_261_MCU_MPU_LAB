@@ -1,0 +1,112 @@
+#include "scheduler.h"
+#include <stddef.h>
+
+sTask SCH_tasks_G[SCH_MAX_TASKS];
+uint8_t current_idx_task = 0;
+
+static sTask* head = NULL;
+
+void SCH_Init(void) {
+	current_idx_task = 0;
+}
+
+uint32_t SCH_Add_Task(void (*pFunction)(), uint32_t DELAY, uint32_t PERIOD) {
+	if(current_idx_task < SCH_MAX_TASKS) {
+		SCH_tasks_G[current_idx_task].pTask  = pFunction;
+		SCH_tasks_G[current_idx_task].Delay  = DELAY;
+		SCH_tasks_G[current_idx_task].Period = PERIOD;
+		SCH_tasks_G[current_idx_task].RunMe  = 0;
+		SCH_tasks_G[current_idx_task].TaskID = current_idx_task;
+		current_idx_task++;
+	}
+}
+
+void SCH_Update(void) {
+	for(int i = 0; i < current_idx_task; i++) {
+		if(SCH_tasks_G[i].Delay > 0) {
+			SCH_tasks_G[i].Delay--;
+		} else {
+			SCH_tasks_G[i].Delay = SCH_tasks_G[i].Period;
+			SCH_tasks_G[i].RunMe += 1;
+		}
+	}
+}
+
+void SCH_Dispatch_Tasks(void) {
+    for(int i = 0; i < current_idx_task; i++) {
+    	if(SCH_tasks_G[i].RunMe > 0) {
+    		SCH_tasks_G[i].RunMe--;
+    		(*SCH_tasks_G[i].pTask)();
+    	}
+    }
+}
+
+// Hàm nội bộ: Chèn task vào danh sách theo nguyên lý độ trễ tương đối (Delta time)
+static void SCH_Insert_Task_To_List(sTask* newNode) {
+    if (head == NULL) {
+        head = newNode;
+        newNode->pNext = NULL;
+        return;
+    }
+
+    sTask* current = head;
+    sTask* previous = NULL;
+
+    while (current != NULL && newNode->Delay >= current->Delay) {
+        newNode->Delay -= current->Delay;
+        previous = current;
+        current = current->pNext;
+    }
+
+    if (previous == NULL) {
+        newNode->pNext = head;
+        head->Delay -= newNode->Delay;
+        head = newNode;
+    } else {
+        previous->pNext = newNode;
+        newNode->pNext = current;
+        if (current != NULL) {
+            current->Delay -= newNode->Delay;
+        }
+    }
+}
+
+// Xóa task khỏi danh sách và giải phóng bộ nhớ[cite: 22]
+uint8_t SCH_Delete_Task(uint32_t taskID) {
+    if (taskID >= SCH_MAX_TASKS || SCH_tasks_G[taskID].pTask == 0) {
+        return 0; // Trả về lỗi nếu ID sai hoặc task không tồn tại[cite: 18]
+    }
+
+    sTask* target = &SCH_tasks_G[taskID];
+
+    if (head == target) {
+        head = head->pNext;
+        if (head != NULL) {
+            head->Delay += target->Delay;
+        }
+    } else {
+        sTask* current = head;
+        sTask* previous = NULL;
+        while (current != NULL && current != target) {
+            previous = current;
+            current = current->pNext;
+        }
+        if (current != NULL) {
+            previous->pNext = current->pNext;
+            if (current->pNext != NULL) {
+                current->pNext->Delay += current->Delay;
+            }
+        }
+    }
+
+    SCH_tasks_G[taskID].pTask = 0;
+    SCH_tasks_G[taskID].Delay = 0;
+    SCH_tasks_G[taskID].Period = 0;
+    SCH_tasks_G[taskID].RunMe = 0;
+    SCH_tasks_G[taskID].pNext = NULL;
+
+    return 1;
+}
+
+// Điều phối viên: Chạy task và lên lịch lại (Gọi ở vòng lặp main)[cite: 22]
+
